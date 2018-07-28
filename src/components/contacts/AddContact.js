@@ -1,80 +1,93 @@
 import React, { Component } from "react";
+import uuid from "uuid";
+
+import { Consumer } from "../../context";
 
 class AddContact extends Component {
-  constructor(props) {
-    super(props);
+  state = {
+    name: "",
+    email: "",
+    phone: ""
+  };
 
-    this.nameInput = React.createRef();
-    this.emailInput = React.createRef();
-    this.phoneInput = React.createRef();
-
-  }
-
-  onSubmit = e => {
+  onSubmit = (dispatch, e) => {
     e.preventDefault();
 
-    const contact = {
-      name: this.nameInput.current.value,
-      email: this.emailInput.current.value,
-      phone: this.phoneInput.current.value,
-    }
+    const { name, email, phone } = this.state;
 
-    console.log(contact);
-  };
+    const newContact = {
+      id: uuid(),
+      name,
+      email,
+      phone
+    };
 
-  static defaultProps = {
-    name: "Fred Smith",
-    email: "fred@yahoo.com",
-    phone: "777-777-7777"
+    dispatch({ type: "ADD_CONTACT", payload: newContact });
+
+    // Clear state after Add
+    this.setState({
+      name: "",
+      email: "",
+      phone: ""
+    });
   };
+  onChange = e => this.setState({ [e.target.name]: e.target.value });
 
   render() {
-    const { name, email, phone } = this.props;
+    const { name, email, phone } = this.state;
 
     return (
-      <div className="card mb-3">
-        <div className="card-header">Add Contact</div>
-        <div className="card-body">
-          <form onSubmit={this.onSubmit}>
-            <div className="form-group">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                name="name"
-                className="form-control form-control-lg"
-                placeholder="Enter Name..."
-                defaultValue={name}
-                ref={this.nameInput}
-              />
-            </div>
+      <Consumer>
+        {value => {
+          const { dispatch } = value;
 
-            <div className="form-group">
-              <label htmlFor="eamil">Email</label>
-              <input
-                type="email"
-                name="email"
-                className="form-control form-control-lg"
-                placeholder="Enter Email..."
-                defaultValue={email}
-                ref={this.emailInput}
-              />
-            </div>
+          return (
+            <div className="card mb-3">
+              <div className="card-header">Add Contact</div>
+              <div className="card-body">
+                <form onSubmit={this.onSubmit.bind(this, dispatch)}>
+                  <div className="form-group">
+                    <label htmlFor="name">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      className="form-control form-control-lg"
+                      placeholder="Enter Name..."
+                      value={name}
+                      onChange={this.onChange}
+                    />
+                  </div>
 
-            <div className="form-group">
-              <label htmlFor="phone">Phone</label>
-              <input
-                type="text"
-                name="phone"
-                className="form-control form-control-lg"
-                placeholder="Enter Phone..."
-                defaultValue={phone}
-                ref={this.phoneInput}
-              />
+                  <div className="form-group">
+                    <label htmlFor="eamil">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      className="form-control form-control-lg"
+                      placeholder="Enter Email..."
+                      value={email}
+                      onChange={this.onChange}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="phone">Phone</label>
+                    <input
+                      type="text"
+                      name="phone"
+                      className="form-control form-control-lg"
+                      placeholder="Enter Phone..."
+                      value={phone}
+                      onChange={this.onChange}
+                    />
+                  </div>
+                  <input type="submit" value="Add Contact" className="btn btn-light btn-block" />
+                </form>
+              </div>
             </div>
-            <input type="submit" value="Add Contact" className="btn btn-light btn-block" />
-          </form>
-        </div>
-      </div>
+          );
+        }}
+      </Consumer>
     );
   }
 }
