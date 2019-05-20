@@ -4,7 +4,7 @@ import { Consumer } from '../../context';
 
 class Contact extends Component {
   state = {
-    showContactInfo: true,
+    showContactInfo: false,
   };
 
   onShowClick = e => {
