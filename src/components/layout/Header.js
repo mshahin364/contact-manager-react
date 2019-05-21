@@ -20,7 +20,7 @@ const Header = props => {
             </li>
             <li className="nav-item">
               <Link to="/contact/add" className="nav-link">
-                <i className="fas fa-plu"></i> Add
+                <i className="fas fa-plus"></i> Add
               </Link>
             </li>
             <li className="nav-item">
